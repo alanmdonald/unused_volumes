@@ -1,7 +1,7 @@
 import boto3
 from tabulate import tabulate
 
-client = boto3.client('ec2')
+client = boto3.client('ec2', region_name='eu-west-1')
 
 table=[]
 volumes = client.describe_volumes( Filters=[{'Name': 'status', 'Values': ['available']}])
