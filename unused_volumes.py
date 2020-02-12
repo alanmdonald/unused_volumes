@@ -16,14 +16,18 @@ for volume in volumes['Volumes']:
 
     snapshots = client.describe_snapshots( Filters=[{'Name': 'volume-id', 'Values': [volume['VolumeId']]}])
     if not snapshots['Snapshots']:
-        table.append('None')
+        #table.append('None')
+        snap='None'
     else:
         table.append(snapshots['Snapshots'][0]['SnapshotId'])
-        #print(snapshots['Snapshots'][0]['SnapshotId']) 
+        snap=snapshots['Snapshots'][0]['SnapshotId'] 
         #print(snapshots['Snapshots'][0]['StartTime'])
         #print(type(snapshots['Snapshots']))
+
+
+   # print(tabulate([[volume['VolumeId'],snap]], headers=['Volume','Snapshot']))
 
     if volume['VolumeType']=='io1':
         print('volume is io1')
 
-print(tabulate([[table[0],table[1]], [table[2],table[3]], [table[4],table[5]]], headers=['Volume','Snapshot']))
+print(tabulate([[table[0],table[1]], [table[2],table[3]]], headers=['Volume','Snapshot']))
