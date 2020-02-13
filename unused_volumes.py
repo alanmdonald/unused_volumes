@@ -1,43 +1,61 @@
 import boto3
-from tabulate import tabulate
 
 client = boto3.client('ec2')
 
-table=[]
-volumes = client.describe_volumes( Filters=[{'Name': 'status', 'Values': ['available']}])
+av_volumes=[]
 
 for region in client.describe_regions()['Regions']:
 
     regions=region['RegionName']
-    print ("Region: "+ regions)
 
     client = boto3.client('ec2', region_name=regions)
     volumes = client.describe_volumes( Filters=[{'Name': 'status', 'Values': ['available']}])
+    
+    if volumes['Volumes']:
+        print ("\033[1m" + "\nRegion: " + regions)
+    else:
+        print ("\033[0m"+ "\nRegion: "+ regions + "\tNo volumes in available state")
     snap="None"
-    start="None"
+    start=""
+    creation=""
     for volume in volumes['Volumes']:
         #print(volume['Size'])
         #print(volume['VolumeId'])
-        #vol=volume['VolumeId']
         #print(volume['Iops'])
         #print(volume['VolumeType'])
-        table.append(volume['VolumeId'])
 
+        av_volumes.append(volume['VolumeId'])
+        av_volumes.append(regions)
         snapshots = client.describe_snapshots( Filters=[{'Name': 'volume-id', 'Values': [volume['VolumeId']]}])
-        if not snapshots['Snapshots']:
-            table.append('None')
-            #snap='None'
-            #time='None'
-        else:
-            table.append(snapshots['Snapshots'][0]['SnapshotId'])
+        if snapshots['Snapshots']:
             snap=snapshots['Snapshots'][0]['SnapshotId'] 
             start=str(snapshots['Snapshots'][0]['StartTime'])
-            #print(type(snapshots['Snapshots']))
+            creation="Creation:"
 
-        print ("Volume:  " + volume['VolumeId'] + "  Snapshot:  " + snap + "  Creation:  " + start)
-   # print(tabulate([[volume['VolumeId'],snap]], headers=['Volume','Snapshot']))
+        print ("Volume:  " + volume['VolumeId'] + "\tSnapshot:  " + snap + "\t" + creation + " "  + start)
 
-    #if volume['VolumeType']=='io1':
-       # print('volume is io1')
+if av_volumes:
+    print ("\nYou have "+str(len(av_volumes)) +" volumes in an available state")
+    option=int(input("\nOptions \n\t[1] Delete volumes  \n\t[2] Take snapshot of volumes  \n\t[3] Take snapshot then delete  \n\t[4] Quit\n\n\t: "))
+else:
+    print("\nYou have no volumes in an available state")
 
-#print(tabulate([[table[0],table[1]], [table[2],table[3]]], headers=['Volume','Snapshot']))
+if option == 1:
+    for vol in av_volumes:
+        print("Deleting: "+vol)
+        #response = client.delete_volume(VolumeId=vol)
+elif option == 2:
+    for vol in av_volumes:
+        print("Taking snapshot of: "+vol)
+        response = client.create_snapshot(VolumeId=vol)
+        print(response)
+elif option == 3:
+    for vol in av_volumes:
+        print("Taking snapshot of: "+vol)
+        #response = client.create_snapshot(VolumeId=vol)
+    for vol in av_volumes:
+        print("Deleting: "+vol)
+        #response = client.delete_volume(VolumeId=vol)
+else:
+    print("Exiting")
+
