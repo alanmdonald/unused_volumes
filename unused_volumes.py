@@ -1,5 +1,6 @@
 import boto3
 import time
+import random
 
 client = boto3.client('ec2')
 
@@ -42,9 +43,22 @@ def deleteVolumes(av_volumes):
 def snapshotVolumes(av_volumes):
     for av in av_volumes:
         client = boto3.client('ec2', region_name=av[1])
-        response = client.create_snapshot(VolumeId=av[0])
+        response = client.create_snapshot(VolumeId=av[0],Description='Created by alanmdonald/unused_volumes', TagSpecifications=[{'ResourceType':'snapshot', 'Tags': [{'Key': 'CreatedBy','Value': 'alanmdonald/unused_volumes'}]}])
         print("Taking snapshot " + response['SnapshotId'] + " of volume "+ av[0]+" in "+av[1] )
     print("\nSnapshots of all volumes in an available state complete")
+
+def confirmDelete(av_volumes):
+    print("Are you sure that you want to delete the following volumes that are in an available state? \n")
+    for av in av_volumes:
+        print av[0]
+
+    checksum=random.randint(100, 999)
+    confirm=input("\n To confirm deletion please enter this randomly generated number "+ str(checksum)+ " :")
+    if confirm == checksum:
+        return
+    else:
+        print("Incorrect number. Exiting\n")
+        exit()
 
 if av_volumes:
     print ("\nYou have "+str(len(av_volumes)) +" volumes in an available state")
@@ -55,15 +69,17 @@ else:
     exit()
 
 if option == 1:
+    confirmDelete(av_volumes)
     deleteVolumes(av_volumes)
 elif option == 2:
-    snaps=snapshotVolumes(av_volumes)
+    snapshotVolumes(av_volumes)
 elif option == 3:
     snapshotVolumes(av_volumes)
-    print("Deleting volumes\n")
+    print("\nMoving to delete volumes\n")
+    confirmDelete(av_volumes)
     deleteVolumes(av_volumes)
 else:
-    print("\nExiting")
+    print("\nExiting\n")
     exit()
 
 
