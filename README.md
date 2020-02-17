@@ -1,10 +1,9 @@
 # Unused Volumes
-Unused volumes
 
-Description:
+### Description:
 Save money by identifying EBS volumes that are not in use. Take a snapshot of these volumes and/or delete them. 
 
-Background:
+### Background:
 When deleting an EC2 instance there are 2 options for the EBS volumes attached. The option DeleteOnTermination can be set to true or false [1]. By default, the DeletionOnTermination attribute for the root volume of an instance is set to true [1] and for non root volumes is set to false. As the name suggests, this attribute determined whether or not a volume is deleted when an instance is terminated. 
 
 The attribute can be altered using the modify-instance-attribute API [2]. 
@@ -15,7 +14,7 @@ A volume in an "available" state is one that is provisioned and incuring cost bu
 
 To help users prevent these costs I have written a short python script.
 
-Setup:
+### Setup:
 You will need to have python and boto3 installed. You will also need to have your AWS credientials correctly configured with the appriopriate permissions.  
 
 Running the script will;
