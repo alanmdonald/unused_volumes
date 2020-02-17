@@ -1,4 +1,4 @@
-# unused_volumes
+# Unused Volumes
 Unused volumes
 
 Description:
@@ -43,4 +43,5 @@ You re run the script in order to confirm the new snapsnot or that the volumes h
 
 
 [1] https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html#preserving-volumes-on-termination
+
 [2] https://docs.aws.amazon.com/cli/latest/reference/ec2/modify-instance-attribute.html
