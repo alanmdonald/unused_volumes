@@ -10,15 +10,18 @@ The attribute can be altered using the modify-instance-attribute API [2].
 
 A common scenario occurs when customers terminate instances and have volumes with DeleteOnTermination set to false. In this case the volumes persist. Unlike an instance (which doesn't incurr a cost when it is stopped) volumes that are not in use (in an "available" state) are still incuring the same cost as if they were attached to an instance. This is beacuse with EBS volumes you pay for the provisioned space and/or IOPS. Even if the volume is not in use the space/IOPS is still provisioned for you and therefor charged. 
 
-*Definition*
+### *Definition:*
+
 A volume in an "available" state is one that is provisioned and incurring cost but is not attached to an EC2 instance.
 
 To help AWS users prevent these costs I have written a short python script.
 
-###Setup:
+### Setup:
+
 You will need to have python and boto3 installed. You will also need to have your AWS credentials correctly configured with the appropriate permissions.
 
-####Running the script will:
+### Running the script will:
+
 Check for all volumes in an available state in every region. If there are none the script will exit. If there are volumes they will be printed to the screen given the volume id, region, whether or not the volume has a snapshot and if so the date of the latest snapshot.
 
 Once listed you will be given 4 options. 
