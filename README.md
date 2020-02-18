@@ -14,6 +14,7 @@ A common scenario occurs when customers terminate instances and have volumes wit
 
 A volume in an "available" state is one that is provisioned and incurring cost but is not attached to an EC2 instance.
 
+______________________________________________________________________________________
 To help AWS users prevent these costs I have written a short python script.
 
 ### Setup:
