@@ -67,16 +67,15 @@ def confirmDelete(av_volumes):
     #Safety question to eunsure volume deletion is not a mistake
     print("\nAre you sure that you want to delete the following volumes that are in an available state? \n")
     for av in av_volumes:
-        print av[0]
+        print (av[0])
 
     #Create random number
     checksum=random.randint(100, 999)
-
-    confirm=input("\n To confirm deletion please enter this randomly generated number "+ str(checksum)+ " :")
+    confirm=int(input("\n To confirm deletion please enter this randomly generated number "+ str(checksum)+ " :"))
     if confirm == checksum:
         return
     else:
-        print("\nIncorrect number. Exiting\n")
+        print("\nIncorrect number "+str(confirm)+" is not equal to "+str(checksum)+". Exiting\n")
         exit()
 
 if av_volumes:
